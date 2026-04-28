@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpaceViz — AR Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="app.css"/>
+</head>
+<body class="app-body">
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">Space<span>Viz</span></div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+      <p>Loading AR Studio...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar" class="scrolled">
+    <a href="index.html" class="nav-logo">Space<span>Viz</span></a>
+    <div class="nav-links">
+      <a href="#catalog">Catalog</a>
+      <a href="#ar-studio">AR Studio</a>
+      <a href="#ai-chat">AI Chat</a>
+    </div>
+    <button class="nav-cta cart-btn" onclick="openCart()">
+      Cart <span id="cart-count" class="cart-badge">0</span>
+    </button>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="app-hero">
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <p class="section-label">AR Studio</p>
+    <h1 class="app-hero-title">Your Room.<br/><em>Your Vision.</em></h1>
+    <p class="app-hero-sub">Select a piece, place it at real scale, check if it fits — all from your browser.</p>
+  </div>
+
+  <!-- CATALOG -->
+  <section id="catalog">
+    <div class="section-header">
+      <p class="section-label">Curated Collection</p>
+      <h2 class="section-title" style="font-size:clamp(28px,4vw,48px)">Choose Your Piece</h2>
+      <p class="section-sub" style="margin-bottom:40px">Tap any item to load it in the AR viewer below</p>
+    </div>
+    <div class="catalog-grid" id="catalog-grid">
+      <!-- Rendered by app.js -->
+    </div>
+  </section>
+
+  <!-- AR STUDIO -->
+  <section id="ar-studio">
+    <div class="section-header">
+      <p class="section-label">Augmented Reality</p>
+      <h2 class="section-title" style="font-size:clamp(28px,4vw,48px)">AR Viewer</h2>
+    </div>
+
+    <div class="ar-layout">
+
+      <!-- Viewer -->
+      <div class="ar-viewer-wrap">
+        <model-viewer
+          id="ar-model"
+          src=""
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          camera-controls
+          auto-rotate
+          shadow-intensity="1"
+          exposure="0.9"
+        >
+          <button slot="ar-button" class="ar-launch-btn">
+            &#9654; Launch in Your Room
+          </button>
+          <div class="ar-placeholder" id="ar-placeholder">
+            <div class="placeholder-ring"></div>
+            <p>Select an item from the catalog above to preview it here</p>
+          </div>
+        </model-viewer>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-panel">
+
+        <!-- Selected Item -->
+        <div class="panel-card" id="selected-card">
+          <div class="panel-card-header">
+            <span class="panel-dot teal"></span>
+            <h3>Selected Item</h3>
+          </div>
+          <div id="selected-info">
+            <p class="muted-text">No item selected yet</p>
+          </div>
+        </div>
+
+        <!-- Fit Checker -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <span class="panel-dot gold"></span>
+            <h3>Fit Checker</h3>
+          </div>
+          <p class="panel-desc">Enter your room size to check if this piece fits perfectly.</p>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Room Width (m)</label>
+              <input type="number" id="room-width" placeholder="e.g. 4.5" step="0.1" min="1" max="20"/>
+            </div>
+            <div class="input-group">
+              <label>Room Length (m)</label>
+              <input type="number" id="room-length" placeholder="e.g. 6.0" step="0.1" min="1" max="20"/>
+            </div>
+          </div>
+          <button class="btn-primary full-width" onclick="checkFit()">Check Fit</button>
+          <div id="fit-result" class="fit-result hidden"></div>
+        </div>
+
+        <!-- Return Risk -->
+        <div class="panel-card" id="risk-card" style="display:none">
+          <div class="panel-card-header">
+            <span class="panel-dot coral"></span>
+            <h3>Purchase Confidence</h3>
+          </div>
+          <div id="risk-result"></div>
+        </div>
+
+        <!-- Quick Add -->
+        <div class="panel-card" id="quick-add-card" style="display:none">
+          <div class="panel-card-header">
+            <span class="panel-dot gold"></span>
+            <h3>Add to Cart</h3>
+          </div>
+          <div id="quick-add-info"></div>
+          <button class="btn-primary full-width" onclick="addCurrentToCart()">
+            Add to Cart
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- AI CHAT -->
+  <section id="ai-chat">
+    <div class="section-header">
+      <p class="section-label">AI Design Intelligence</p>
+      <h2 class="section-title" style="font-size:clamp(28px,4vw,48px)">Your Personal<br/>Interior Advisor</h2>
+      <p class="section-sub" style="margin-bottom:40px">Ask anything about your space, style, or budget</p>
+    </div>
+
+    <div class="chat-wrap">
+      <div class="chat-window" id="chat-window">
+        <div class="chat-msg ai">
+          <div class="chat-avatar">SV</div>
+          <div class="chat-bubble">
+            Hello! I'm your SpaceViz AI design advisor. Tell me about your room —
+            its dimensions, your existing furniture, colour palette, or budget —
+            and I'll suggest the perfect pieces for your space.
+          </div>
+        </div>
+      </div>
+      <div class="chat-suggestions">
+        <button class="chip" onclick="fillChat('I placed a leather sofa. What else fits my room?')">Suggest matching items</button>
+        <button class="chip" onclick="fillChat('My room is 3.5m x 4m. Furnish it for ₹50,000.')">Furnish my room</button>
+        <button class="chip" onclick="fillChat('What colour rug goes with a walnut coffee table?')">Colour advice</button>
+        <button class="chip" onclick="fillChat('Best plants for a living room with low sunlight?')">Plant suggestions</button>
+      </div>
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Ask your design advisor anything..."
+          onkeydown="if(event.key==='Enter') sendChat()"
+        />
+        <button class="btn-primary" onclick="sendChat()">
+          Send
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CART MODAL -->
+  <div id="cart-modal" class="modal hidden">
+    <div class="modal-backdrop" onclick="closeCart()"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Your Cart</h3>
+        <button class="modal-close" onclick="closeCart()">&#10005;</button>
+      </div>
+      <div id="cart-items">
+        <p class="muted-text" style="padding:24px 0">Your cart is empty</p>
+      </div>
+      <div class="modal-footer">
+        <div class="cart-total">Total: <span id="cart-total">₹0</span></div>
+        <button class="btn-primary full-width" onclick="checkout()">
+          Place Order
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="success-modal" class="modal hidden">
+    <div class="modal-backdrop" onclick="closeSuccess()"></div>
+    <div class="modal-box success-box">
+      <div class="success-icon">&#10003;</div>
+      <h3>Order Confirmed!</h3>
+      <p>Your AR-verified order has been placed.<br/>Expected delivery in 5–7 business days.</p>
+      <div class="success-meta">
+        <div class="success-meta-item">
+          <span>Order ID</span>
+          <strong id="order-id">#SV000</strong>
+        </div>
+        <div class="success-meta-item">
+          <span>AR Verified</span>
+          <strong class="teal-text">Yes</strong>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="closeSuccess()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+  <script src="chat.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+      }, 2000);
+    });
+  </script>
+
+</body>
+</html>
