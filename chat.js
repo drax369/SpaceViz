@@ -1,6 +1,6 @@
 // ── AI DESIGN ASSISTANT ──
 
-const GEMINI_API_KEY = 'AIzaSyDZ3B0nFvMdkes0b2YSd2HEHLH7KfEtS8M'; // ← paste your key here
+const GEMINI_API_KEY = 'AIzaSyCoZIwT0uPb2Nc2WB2kRAtVMjw13T3g9bE'; // ← paste your key here
 
 const SYSTEM_PROMPT = `You are SpaceViz's expert AI interior design advisor with 15+ years of experience. You help users furnish and decorate their spaces beautifully.
 
@@ -167,23 +167,51 @@ function fillChat(text) {
 function getFallbackResponse(message) {
   const msg = message.toLowerCase();
 
-  if (msg.includes('sofa') || msg.includes('couch')) {
-    return `For a sofa, pair it with a coffee table that's roughly 2/3 its length — so for a 2.1m sofa, a 120–140cm table works beautifully. Add a textured throw and two contrasting cushions to complete the seating area. Look at Urban Ladder's Estre or Pepperfry's Boston range — excellent quality in the ₹15,000–25,000 range.`;
-  }
-  if (msg.includes('colour') || msg.includes('color') || msg.includes('rug')) {
-    return `Colour pairing works best with a warm anchor — terracotta, warm white, or teak tones. For rugs, a Persian-inspired pattern in muted ochre ties a neutral room together brilliantly. A jute or wool blend from Fabindia around ₹8,000–15,000 would be my first pick.`;
-  }
-  if (msg.includes('plant') || msg.includes('green')) {
-    return `Monstera deliciosa is my top pick for Indian living rooms — thrives in indirect light and has tremendous visual presence. Pair it with a Pothos on a shelf for layered greenery. Both are available at local nurseries for under ₹500 and need water just once a week.`;
-  }
-  if (msg.includes('budget') || msg.includes('₹') || msg.includes('affordable')) {
-    return `Prioritise sofa and bed first — daily-use items where quality matters most. Supplement with Pepperfry and IKEA India for accent pieces. A ₹50,000 budget can comfortably furnish a living room if you shop across 2–3 retailers.`;
-  }
-  if (msg.includes('small') || msg.includes('compact') || msg.includes('studio')) {
-    return `For compact spaces, multi-functional furniture is key — a storage ottoman doubles as a coffee table, vertical shelving draws the eye up. Keep your palette light and consistent with one accent colour. IKEA India's KALLAX range is perfect for small-space solutions.`;
+  if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) {
+    return `Hello! Welcome to SpaceViz. Tell me about your room — its size, your style, or your budget — and I'll help you design the perfect space. What are you working on today?`;
   }
 
-  return `The key to a well-designed room is balance — between scale, colour, and texture. Start with your largest piece and build outward, always leaving 60–90cm walkway clearance. Use the Fit Checker above to verify dimensions before purchasing. What specific area of your room would you like advice on?`;
+  if (msg.includes('sofa') || msg.includes('couch')) {
+    return `For a sofa, pair it with a coffee table that's roughly 2/3 its length. For a 2.1m sofa, a 120–140cm table works beautifully. Add a textured throw and two contrasting cushions. Look at Urban Ladder's Estre or Pepperfry's Boston range — excellent quality in the ₹15,000–25,000 range.`;
+  }
+
+  if (msg.includes('colour') || msg.includes('color') || msg.includes('rug')) {
+    return `Warm anchor tones work best in Indian homes — terracotta, warm white, or teak wood. For rugs, a Persian-inspired pattern in muted ochre or rust ties a neutral room together brilliantly. A jute or wool blend from Fabindia around ₹8,000–15,000 would be my first pick.`;
+  }
+
+  if (msg.includes('plant') || msg.includes('green')) {
+    return `Monstera deliciosa is my top pick for Indian living rooms — thrives in indirect light and has tremendous visual presence. Pair it with a Pothos on a shelf for layered greenery. Both are widely available at local nurseries for under ₹500. Water once a week, keep away from direct afternoon sun.`;
+  }
+
+  if (msg.includes('budget') || msg.includes('₹') || msg.includes('cheap') || msg.includes('afford')) {
+    return `Prioritise sofa and bed first — daily-use items where quality matters most. Supplement with Pepperfry and IKEA India for accent pieces. A ₹50,000 budget can comfortably furnish a living room if you shop across 2–3 retailers and avoid impulse décor purchases.`;
+  }
+
+  if (msg.includes('small') || msg.includes('compact') || msg.includes('studio')) {
+    return `For compact spaces, go multi-functional — storage ottoman as coffee table, wall-mounted fold-down desk, sofa bed for guests. Keep one dominant neutral with one accent colour. Vertical shelving draws the eye up and makes rooms feel taller. IKEA India's KALLAX range is excellent for small spaces.`;
+  }
+
+  if (msg.includes('bedroom') || msg.includes('bed')) {
+    return `For bedrooms, position the bed against the longest solid wall with at least 60cm clearance on both sides. Warm bedside lighting at shoulder height creates the best ambience. A storage bed frame eliminates the need for extra wardrobes in smaller rooms — look at Wooden Street's hydraulic storage beds around ₹25,000–40,000.`;
+  }
+
+  if (msg.includes('dining') || msg.includes('table')) {
+    return `For a dining table, allow at least 90cm between the table edge and the wall for comfortable chair pull-out. A 4-seater needs roughly 120cm × 75cm minimum. Round tables work beautifully in square rooms and encourage conversation. Sheesham wood from Wooden Street ages incredibly well in Indian climates.`;
+  }
+
+  if (msg.includes('lighting') || msg.includes('lamp') || msg.includes('light')) {
+    return `Layer your lighting — ambient (ceiling), task (reading/work), and accent (decorative). A warm 2700K bulb temperature makes any room feel luxurious. Floor lamps in corners add depth without taking up table space. Avoid single overhead lighting — it flattens a room completely.`;
+  }
+
+  // True default — rotate between different responses
+  const defaults = [
+    `Tell me more about your space! What room are you furnishing, and what's your approximate budget? That'll help me give you much more specific advice.`,
+    `Great question. The key is always to start with your largest anchor piece, then build the room around it. What piece are you starting with?`,
+    `I'd love to help you design this space. Can you tell me the room dimensions and your existing furniture? I can then suggest exactly what would complement it.`,
+    `For any room, I follow the 60-30-10 colour rule — 60% dominant neutral, 30% secondary tone, 10% accent. What colour palette are you working with?`
+  ];
+
+  return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
 // ── ENTER KEY ──
