@@ -171,6 +171,7 @@ async function generateModel() {
 });
 
     const prediction = await response.json();
+    console.log('Replicate response:', JSON.stringify(prediction));
 
     if (!prediction.id) {
       throw new Error(prediction.detail || 'Failed to start generation');
@@ -193,12 +194,12 @@ async function generateModel() {
     }, 800);
 
   } catch (err) {
-    console.error(err);
-    setStatus('error', 'Generation failed. Please try a clearer image.');
-    showProgress(false);
-    btn.disabled = false;
-    btn.textContent = 'Try Again';
-  }
+  console.error('Full error:', err);
+  setStatus('error', `Error: ${err.message}`);
+  showProgress(false);
+  btn.disabled = false;
+  btn.textContent = 'Try Again';
+}
 }
 
 // ── POLL FOR RESULT ──
