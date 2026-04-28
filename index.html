@@ -8,169 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
-  <style>
-    /* ── HERO TWO-COLUMN ── */
-    #hero {
-      display: grid;
-      grid-template-rows: auto auto auto;
-      min-height: 100vh;
-      position: relative;
-      padding-top: 100px;
-    }
-
-    .hero-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 60px 80px;
-      width: 100%;
-    }
-
-    .hero-left { display: flex; flex-direction: column; gap: 32px; }
-
-    .hero-right {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hero-room-preview {
-      width: 100%;
-      aspect-ratio: 4/3;
-      border-radius: 24px;
-      border: 1px solid rgba(201,168,76,0.25);
-      background: radial-gradient(ellipse at 40% 60%, rgba(201,168,76,0.12) 0%, rgba(45,212,191,0.04) 50%, transparent 80%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-room-preview::before {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 40%;
-      background: linear-gradient(to top, rgba(201,168,76,0.08), transparent);
-    }
-
-    .hero-furniture-display {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 16px;
-      padding: 32px;
-      width: 100%;
-      height: 100%;
-    }
-
-    .hero-furniture-item {
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 20px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-furniture-item:hover {
-      border-color: rgba(201,168,76,0.3);
-      transform: translateY(-4px);
-    }
-
-    .hero-furniture-item:nth-child(1) { background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05)); }
-    .hero-furniture-item:nth-child(2) { background: linear-gradient(135deg, rgba(45,212,191,0.12), rgba(45,212,191,0.04)); }
-    .hero-furniture-item:nth-child(3) { background: linear-gradient(135deg, rgba(139,94,60,0.15), rgba(139,94,60,0.05)); }
-    .hero-furniture-item:nth-child(4) { background: linear-gradient(135deg, rgba(74,111,165,0.15), rgba(74,111,165,0.05)); }
-
-    .hero-furniture-emoji { font-size: 48px; line-height: 1; }
-    .hero-furniture-name { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
-    .hero-furniture-price { font-size: 13px; color: rgba(201,168,76,0.8); font-family: 'Cormorant Garamond', serif; }
-
-    .hero-floating-badge {
-      position: absolute;
-      background: rgba(10,10,10,0.92);
-      border: 1px solid rgba(201,168,76,0.3);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      backdrop-filter: blur(12px);
-      z-index: 10;
-      white-space: nowrap;
-    }
-
-    .hero-floating-badge .badge-val {
-      display: block;
-      font-size: 18px;
-      font-family: 'Cormorant Garamond', serif;
-      color: #2DD4BF;
-      margin-bottom: 2px;
-    }
-
-    .badge-top-right { top: -16px; right: 20px; }
-    .badge-bottom-left { bottom: -16px; left: 20px; }
-
-    .hero-ar-indicator {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(10,10,10,0.8);
-      border: 1px solid rgba(45,212,191,0.3);
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #2DD4BF;
-      backdrop-filter: blur(8px);
-    }
-
-    .ar-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #2DD4BF;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    /* ── FIX GAPS ── */
-    #how { padding-bottom: 60px; }
-    #impact { padding-top: 80px; }
-
-    /* ── FEATURE CARDS ── */
-    .feature-card {
-      transition: transform 0.3s ease, border-color 0.3s ease !important;
-    }
-    .feature-card:hover {
-      transform: translateY(-4px) !important;
-      border-color: rgba(201,168,76,0.25) !important;
-    }
-
-    /* ── STEPS COMPACT ── */
-    .steps-wrap { padding-bottom: 0; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; padding: 40px 24px; }
-      .hero-right { display: none; }
-    }
-  </style>
 </head>
 <body>
 
@@ -212,9 +49,8 @@
     <div class="hero-orb orb3"></div>
     <div class="hero-grid"></div>
 
-    <div class="hero-inner">
-      <!-- LEFT -->
-      <div class="hero-left">
+    <div class="hero-content" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1300px;margin:0 auto;padding:0 80px;width:100%;">
+      <div>
         <div class="hero-badge">
           <span class="badge-dot"></span>
           No Hardware &nbsp;·&nbsp; No App Install &nbsp;·&nbsp; Any Retailer
@@ -237,43 +73,46 @@
         </div>
       </div>
 
-      <!-- RIGHT — Room Preview -->
-      <div class="hero-right">
-        <div class="hero-room-preview">
-          <div class="hero-ar-indicator">
-            <div class="ar-dot"></div>
+      <!-- RIGHT PANEL -->
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:24px;border:1px solid rgba(201,168,76,0.25);background:radial-gradient(ellipse at 40% 60%, rgba(201,168,76,0.12) 0%, rgba(45,212,191,0.04) 50%, transparent 80%);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;padding:24px;position:relative;overflow:hidden;">
+          
+          <div style="position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:8px;background:rgba(10,10,10,0.85);border:1px solid rgba(45,212,191,0.4);border-radius:20px;padding:6px 12px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#2DD4BF;z-index:10;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#2DD4BF;animation:pulse 2s ease-in-out infinite;"></div>
             AR Live
           </div>
 
-          <div class="hero-furniture-display">
-            <div class="hero-furniture-item">
-              <div class="hero-furniture-emoji">🛋️</div>
-              <div class="hero-furniture-name">Milano Sofa</div>
-              <div class="hero-furniture-price">₹45,999</div>
-            </div>
-            <div class="hero-furniture-item">
-              <div class="hero-furniture-emoji">🪑</div>
-              <div class="hero-furniture-name">Luxe Armchair</div>
-              <div class="hero-furniture-price">₹18,999</div>
-            </div>
-            <div class="hero-furniture-item">
-              <div class="hero-furniture-emoji">💡</div>
-              <div class="hero-furniture-name">Zen Floor Lamp</div>
-              <div class="hero-furniture-price">₹6,999</div>
-            </div>
-            <div class="hero-furniture-item">
-              <div class="hero-furniture-emoji">🌿</div>
-              <div class="hero-furniture-name">Monstera Plant</div>
-              <div class="hero-furniture-price">₹2,499</div>
-            </div>
+          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,0.06);padding:16px;">
+            <div style="font-size:40px;">🛋️</div>
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Milano Sofa</div>
+            <div style="font-size:13px;color:rgba(201,168,76,0.8);font-family:'Cormorant Garamond',serif;">₹45,999</div>
           </div>
 
-          <div class="hero-floating-badge badge-top-right">
-            <span class="badge-val">✓ Fits</span>
+          <div style="background:linear-gradient(135deg,rgba(45,212,191,0.12),rgba(45,212,191,0.04));border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,0.06);padding:16px;">
+            <div style="font-size:40px;">🪑</div>
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Luxe Armchair</div>
+            <div style="font-size:13px;color:rgba(201,168,76,0.8);font-family:'Cormorant Garamond',serif;">₹18,999</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,0.06);padding:16px;">
+            <div style="font-size:40px;">💡</div>
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Zen Lamp</div>
+            <div style="font-size:13px;color:rgba(201,168,76,0.8);font-family:'Cormorant Garamond',serif;">₹6,999</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,rgba(45,100,79,0.2),rgba(45,100,79,0.05));border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,0.06);padding:16px;">
+            <div style="font-size:40px;">🌿</div>
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Monstera</div>
+            <div style="font-size:13px;color:rgba(201,168,76,0.8);font-family:'Cormorant Garamond',serif;">₹2,499</div>
+          </div>
+
+          <div style="position:absolute;top:-12px;right:16px;background:rgba(10,10,10,0.92);border:1px solid rgba(45,212,191,0.4);border-radius:12px;padding:10px 14px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);backdrop-filter:blur(12px);">
+            <span style="display:block;font-size:16px;font-family:'Cormorant Garamond',serif;color:#2DD4BF;margin-bottom:2px;">✓ Fits</span>
             8cm clearance
           </div>
-          <div class="hero-floating-badge badge-bottom-left">
-            <span class="badge-val" style="color: var(--gold);">AI</span>
+
+          <div style="position:absolute;bottom:-12px;left:16px;background:rgba(10,10,10,0.92);border:1px solid rgba(201,168,76,0.4);border-radius:12px;padding:10px 14px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);backdrop-filter:blur(12px);">
+            <span style="display:block;font-size:16px;font-family:'Cormorant Garamond',serif;color:#C9A84C;margin-bottom:2px;">AI</span>
             Design Advisor
           </div>
         </div>
@@ -315,6 +154,7 @@
     <p class="section-sub">Seven innovations. All pure software. All browser-native.</p>
 
     <div class="features-grid">
+
       <div class="feature-card large">
         <div class="feature-icon">⬡</div>
         <h3>Fit Checker</h3>
@@ -343,13 +183,6 @@
         <div class="feature-tag">Behavioural ML</div>
       </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">📸</div>
-        <h3>Image → 3D Model</h3>
-        <p>Photograph any furniture from a magazine or store. Our AI converts it to a 3D model in seconds — then place it in your room via AR.</p>
-        <div class="feature-tag">Generative AI</div>
-      </div>
-
       <div class="feature-card large">
         <div class="feature-icon">⬢</div>
         <h3>Multi-Brand AR Room</h3>
@@ -363,6 +196,7 @@
         <p>Any retailer embeds SpaceViz with one script tag. We are the Shopify of AR commerce — for the 10,000 brands Amazon will never serve.</p>
         <div class="feature-tag">SDK Platform</div>
       </div>
+
     </div>
   </section>
 
@@ -479,21 +313,30 @@
 
   <script src="style.js"></script>
   <script>
+    // Loader
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').classList.add('hidden');
       }, 2000);
     });
 
+    // Navbar scroll effect
     window.addEventListener('scroll', () => {
       const nav = document.getElementById('navbar');
       nav.classList.toggle('scrolled', window.scrollY > 50);
     });
 
+    // Mobile menu
     function toggleMenu() {
       document.getElementById('mobile-menu').classList.toggle('open');
     }
 
+    // Smooth scroll
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Animated counters
     function animateCounters() {
       document.querySelectorAll('.stat-num').forEach(el => {
         const target = parseInt(el.dataset.target);
@@ -510,6 +353,7 @@
       });
     }
 
+    // Intersection observer for animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -523,6 +367,7 @@
       observer.observe(el);
     });
 
+    // Trigger hero counter on load
     setTimeout(animateCounters, 2200);
   </script>
 
