@@ -10,7 +10,7 @@ const CATALOG = [
     dimsDisplay: "210cm × 90cm × 85cm",
     emoji: "🛋️",
     tag: "Bestseller",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
     color: "#C9A84C"
   },
   {
@@ -24,6 +24,7 @@ const CATALOG = [
     emoji: "🪑",
     tag: "New",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
+
     color: "#2DD4BF"
   },
   {
@@ -36,7 +37,7 @@ const CATALOG = [
     dimsDisplay: "120cm × 60cm × 45cm",
     emoji: "🪵",
     tag: "Popular",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/WaterBottle/glTF-Binary/WaterBottle.glb",
+   model: "https://modelviewer.dev/shared-assets/models/RobotExpressive.glb",
     color: "#92603A"
   },
   {
@@ -49,7 +50,7 @@ const CATALOG = [
     dimsDisplay: "100cm × 35cm × 180cm",
     emoji: "📚",
     tag: "Premium",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
+   model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
     color: "#4A6FA5"
   },
   {
@@ -75,7 +76,7 @@ const CATALOG = [
     dimsDisplay: "60cm × 60cm × 120cm",
     emoji: "🌿",
     tag: "Trending",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/FlightHelmet/glTF-Binary/FlightHelmet.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
     color: "#2D6A4F"
   },
   {
