@@ -1,5 +1,5 @@
 // ── IMAGE TO 3D FEATURE ──
-const REPLICATE_TOKEN = window.REPLICATE_TOKEN || ''; // paste your full token here
+const REPLICATE_TOKEN = window.__ENV__?.REPLICATE_TOKEN || ''; // paste your full token here
 
 // ── INJECT UI INTO APP PAGE ──
 document.addEventListener('DOMContentLoaded', () => {
