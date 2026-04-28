@@ -10,7 +10,7 @@ const CATALOG = [
     dimsDisplay: "210cm × 90cm × 85cm",
     emoji: "🛋️",
     tag: "Bestseller",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
     color: "#C9A84C"
   },
   {
@@ -23,7 +23,7 @@ const CATALOG = [
     dimsDisplay: "85cm × 80cm × 90cm",
     emoji: "🪑",
     tag: "New",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
     color: "#2DD4BF"
   },
   {
@@ -36,7 +36,7 @@ const CATALOG = [
     dimsDisplay: "120cm × 60cm × 45cm",
     emoji: "🪵",
     tag: "Popular",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/WaterBottle/glTF-Binary/WaterBottle.glb",
     color: "#92603A"
   },
   {
@@ -49,7 +49,7 @@ const CATALOG = [
     dimsDisplay: "100cm × 35cm × 180cm",
     emoji: "📚",
     tag: "Premium",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
     color: "#4A6FA5"
   },
   {
@@ -62,7 +62,7 @@ const CATALOG = [
     dimsDisplay: "40cm × 40cm × 160cm",
     emoji: "💡",
     tag: "New",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Lantern/glTF-Binary/Lantern.glb",
     color: "#C9A84C"
   },
   {
@@ -75,7 +75,7 @@ const CATALOG = [
     dimsDisplay: "60cm × 60cm × 120cm",
     emoji: "🌿",
     tag: "Trending",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/FlightHelmet/glTF-Binary/FlightHelmet.glb",
     color: "#2D6A4F"
   },
   {
@@ -88,7 +88,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 90cm × 76cm",
     emoji: "🍽️",
     tag: "Premium",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
     color: "#8B5E3C"
   },
   {
@@ -101,7 +101,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 210cm × 120cm",
     emoji: "🛏️",
     tag: "Luxury",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
     color: "#7B2D8B"
   }
 ];
@@ -472,6 +472,30 @@ function showToast(message) {
     toast.classList.add('hidden');
   }, 3000);
 }
+// ── MODEL VIEWER ERROR HANDLING ──
+document.addEventListener('DOMContentLoaded', () => {
+  const viewer = document.getElementById('ar-model');
+  if (!viewer) return;
+
+  viewer.addEventListener('error', (e) => {
+    console.error('Model failed to load:', e);
+    showToast('⚠️ 3D model failed to load — trying fallback');
+    viewer.src = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+  });
+
+  viewer.addEventListener('load', () => {
+    console.log('Model loaded successfully:', viewer.src);
+    showToast('✓ 3D model loaded');
+  });
+});
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeCart();
+    closeSuccess();
+  }
+});
 
 // ── KEYBOARD SHORTCUTS ──
 document.addEventListener('keydown', (e) => {
