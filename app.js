@@ -10,7 +10,7 @@ const CATALOG = [
     dimsDisplay: "210cm × 90cm × 85cm",
     emoji: "🛋️",
     tag: "Bestseller",
-    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
+    model: "/models/sofa_free.glb",
     color: "#C9A84C",
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
     variants: [
@@ -30,7 +30,7 @@ const CATALOG = [
     dimsDisplay: "85cm × 80cm × 90cm",
     emoji: "🪑",
     tag: "New",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "/models/victorian_armchair.glb",
     color: "#2DD4BF",
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80",
     variants: [
@@ -50,7 +50,7 @@ const CATALOG = [
     dimsDisplay: "120cm × 60cm × 45cm",
     emoji: "🪵",
     tag: "Popular",
-    model: "https://modelviewer.dev/shared-assets/models/reflective-sphere.glb",
+    model: "/models/wooden_coffee_table.glb",
     color: "#92603A",
     image: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80",
     variants: [
@@ -70,7 +70,7 @@ const CATALOG = [
     dimsDisplay: "100cm × 35cm × 180cm",
     emoji: "📚",
     tag: "Premium",
-    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
+    model: "/models/book_shelf.glb",
     color: "#4A6FA5",
     image: "https://images.unsplash.com/photo-1594620302200-9a762244a156?w=600&q=80",
     variants: [
@@ -90,7 +90,7 @@ const CATALOG = [
     dimsDisplay: "40cm × 40cm × 160cm",
     emoji: "💡",
     tag: "New",
-    model: "https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb",
+    model: "/models/floor_lamp.glb",
     color: "#C9A84C",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
     variants: [
@@ -110,7 +110,7 @@ const CATALOG = [
     dimsDisplay: "60cm × 60cm × 120cm",
     emoji: "🌿",
     tag: "Trending",
-    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+    model: "/models/indoor_plant (3).glb",
     color: "#2D6A4F",
     image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
     variants: [
@@ -130,7 +130,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 90cm × 76cm",
     emoji: "🍽️",
     tag: "Premium",
-    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
+    model: "/models/dining_table (1).glb",
     color: "#8B5E3C",
     image: "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80",
     variants: [
@@ -150,7 +150,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 210cm × 120cm",
     emoji: "🛏️",
     tag: "Luxury",
-    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
+    model: "/models/classic_blackwhite_bed.glb",
     color: "#7B2D8B",
     image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=600&q=80",
     variants: [
