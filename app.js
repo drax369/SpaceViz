@@ -107,6 +107,7 @@ const CATALOG = [
 ];
 
 // ── STATE ──
+let roomItems = [];
 let selectedItem = null;
 let cart         = [];
 let itemViewedAt = null;
@@ -236,7 +237,8 @@ function selectItem(id) {
   startRiskTimer(item);
 
   // Toast
-  showToast(`${item.emoji} ${item.name} loaded — click "Launch in Your Room" for AR`);
+  addToRoom(item);
+showToast(`${item.emoji} ${item.name} added to room — click "Launch in Your Room" for AR`);
 
   // Smooth scroll to AR studio
   setTimeout(() => {
@@ -524,7 +526,66 @@ function showToast(message) {
     toast.classList.add('hidden');
   }, 3500);
 }
+// ── ROOM BUILDER ──
+function addToRoom(item) {
+  const existing = roomItems.find(r => r.id === item.id);
+  if (existing) {
+    showToast(`${item.emoji} ${item.name} is already in your room`);
+    return;
+  }
 
+  roomItems.push(item);
+  updateRoomUI();
+  showToast(`${item.emoji} ${item.name} added to room`);
+}
+
+function removeFromRoom(id) {
+  roomItems = roomItems.filter(r => r.id !== id);
+  updateRoomUI();
+}
+
+function updateRoomUI() {
+  const list    = document.getElementById('room-items-list');
+  const footer  = document.getElementById('room-footer');
+  const count   = document.getElementById('room-item-count');
+  const total   = document.getElementById('room-total');
+  if (!list) return;
+
+  count.textContent = `${roomItems.length} item${roomItems.length !== 1 ? 's' : ''}`;
+
+  if (roomItems.length === 0) {
+    list.innerHTML = `<p class="muted-text">Add items from the catalog to build your room</p>`;
+    footer.style.display = 'none';
+    return;
+  }
+
+  const totalPrice = roomItems.reduce((sum, i) => sum + i.price, 0);
+  total.textContent = `₹${totalPrice.toLocaleString('en-IN')}`;
+  footer.style.display = 'block';
+
+  list.innerHTML = roomItems.map(item => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:24px">${item.emoji}</span>
+      <div style="flex:1;">
+        <div style="font-size:14px;color:var(--white)">${item.name}</div>
+        <div style="font-size:12px;color:var(--gold);font-family:var(--font-display)">${item.priceDisplay}</div>
+      </div>
+      <button onclick="removeFromRoom(${item.id})" style="background:none;border:none;color:var(--white-30);cursor:pointer;font-size:16px;padding:4px;">✕</button>
+    </div>
+  `).join('');
+}
+
+function addRoomToCart() {
+  if (roomItems.length === 0) return;
+  roomItems.forEach(item => addToCart(item));
+  showToast(`✓ All ${roomItems.length} room items added to cart!`);
+}
+
+function clearRoom() {
+  roomItems = [];
+  updateRoomUI();
+  showToast('Room cleared');
+}
 // ── KEYBOARD ──
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {

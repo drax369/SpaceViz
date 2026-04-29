@@ -108,8 +108,32 @@
 
       <!-- Controls -->
       <div class="controls-panel">
+        
 
-        <!-- Selected Item -->
+        <!-- Room Builder -->
+<div class="panel-card" id="room-builder-card">
+  <div class="panel-card-header">
+    <span class="panel-dot teal"></span>
+    <h3>My Room</h3>
+    <span id="room-item-count" style="font-size:11px;color:var(--white-30);margin-left:auto;letter-spacing:1px">0 items</span>
+  </div>
+  <div id="room-items-list">
+    <p class="muted-text">Add items from the catalog to build your room</p>
+  </div>
+  <div id="room-footer" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span style="font-size:13px;color:var(--white-30);">Room Total</span>
+      <span id="room-total" style="font-family:var(--font-display);font-size:24px;color:var(--gold);">₹0</span>
+    </div>
+    <button class="btn-primary full-width" onclick="addRoomToCart()" style="margin-bottom:8px;">
+      Add All to Cart
+    </button>
+    <button class="btn-ghost full-width" onclick="clearRoom()">
+      Clear Room
+    </button>
+  </div>
+</div>
+<!-- Selected Item -->
         <div class="panel-card" id="selected-card">
           <div class="panel-card-header">
             <span class="panel-dot teal"></span>
