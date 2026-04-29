@@ -1,6 +1,6 @@
 // ── AI DESIGN ASSISTANT ──
 
-const GEMINI_API_KEY = 'AIzaSyCoZIwT0uPb2Nc2WB2kRAtVMjw13T3g9bE'; // ← paste your key here
+const GEMINI_API_KEY = 'AIzaSyC7v2JLObWgquNb9zzJHQokjY4JS18TsZg'; // ← paste your key here
 
 const SYSTEM_PROMPT = `You are SpaceViz's expert AI interior design advisor with 15+ years of experience. You help users furnish and decorate their spaces beautifully.
 
@@ -49,7 +49,7 @@ async function sendChat() {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
