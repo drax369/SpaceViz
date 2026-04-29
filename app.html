@@ -77,14 +77,14 @@
           shadow-intensity="1"
           exposure="0.9"
         >
-          <button slot="ar-button" class="ar-launch-btn">
+          <button slot="ar-button" class="ar-launch-btn" onclick="onARLaunched()">
             &#9654; Launch in Your Room
           </button>
           <div class="ar-placeholder" id="ar-placeholder">
             <div class="placeholder-ring"></div>
             <p>Select an item from the catalog above to preview it here</p>
           </div>
-        <div class="ar-action-bar" id="ar-action-bar" style="display:none">
+          <div class="ar-action-bar" id="ar-action-bar" style="display:none">
             <button class="ar-action-btn" onclick="captureRoom()" title="Screenshot">
               📸 <span>Screenshot</span>
             </button>
@@ -94,6 +94,7 @@
           </div>
         </model-viewer>
       </div>
+
       <!-- Controls -->
       <div class="controls-panel">
 
@@ -137,7 +138,7 @@
           </div>
           <div id="risk-result"></div>
         </div>
-        
+
         <!-- Quick Add -->
         <div class="panel-card" id="quick-add-card" style="display:none">
           <div class="panel-card-header">
@@ -153,7 +154,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- AI CHAT -->
   <section id="ai-chat">
     <div class="section-header">
@@ -238,11 +239,12 @@
 
   <!-- TOAST -->
   <div id="toast" class="toast hidden"></div>
-<script>
-  window.__ENV__ = {
-    REPLICATE_TOKEN: '%%REPLICATE_TOKEN%%'
-  };
-</script>
+
+  <script>
+    window.__ENV__ = {
+      REPLICATE_TOKEN: '%%REPLICATE_TOKEN%%'
+    };
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="app.js"></script>
   <script src="chat.js"></script>
