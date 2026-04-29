@@ -397,71 +397,20 @@ function startRiskTimer(item) {
 }
 
 // ── SCREENSHOT ──
-async function captureRoom() {
-  showToast('📸 Taking screenshot...');
-  
-  try {
-    // Capture the screen using Screen Capture API
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: { mediaSource: 'screen' },
-      preferCurrentTab: true
-    });
-    
-    const track = stream.getVideoTracks()[0];
-    const imageCapture = new ImageCapture(track);
-    const bitmap = await imageCapture.grabFrame();
-    
-    // Stop the stream immediately
-    track.stop();
-    
-    // Convert to canvas then blob
-    const canvas = document.createElement('canvas');
-    canvas.width = bitmap.width;
-    canvas.height = bitmap.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bitmap, 0, 0);
-    
-    canvas.toBlob(async (blob) => {
-      const file = new File([blob], `SpaceViz-AR-${Date.now()}.png`, { type: 'image/png' });
-      
-      // Try to share the actual image file
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: `SpaceViz AR — ${selectedItem?.name || 'Furniture'}`,
-          text: 'I placed this furniture in my actual room using SpaceViz AR!'
-        });
-      } else {
-        // Fallback — download the image
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `SpaceViz-AR-${Date.now()}.png`;
-        link.click();
-        URL.revokeObjectURL(url);
-        showToast('✓ Screenshot downloaded!');
-      }
-    }, 'image/png');
-    
-  } catch (err) {
-    // User denied screen capture — fall back to native screenshot prompt
-    showToast('📸 Press your phone\'s side buttons to screenshot, then use 🔗 to share!');
-  }
-}
-
-function shareRoom() {
+function shareARView() {
   const itemName = selectedItem?.name || 'furniture';
-  
+  const price = selectedItem?.priceDisplay || '';
+
   if (navigator.share) {
     navigator.share({
-      title: `SpaceViz — ${itemName} in AR`,
-      text: `I placed the ${itemName} in my actual room using SpaceViz AR — no app needed! Try it yourself:`,
+      title: `SpaceViz AR — ${itemName}`,
+      text: `Just placed the ${itemName} (${price}) in my actual room using SpaceViz AR — no app, no download, works right in the browser! Try it:`,
       url: window.location.href
     }).catch(() => {});
   } else {
-    navigator.clipboard.writeText(`Check out SpaceViz AR: ${window.location.href}`).then(() => {
-      showToast('🔗 Link copied!');
-    });
+    navigator.clipboard.writeText(
+      `Just placed the ${itemName} (${price}) in my room using SpaceViz AR! Try it: ${window.location.href}`
+    ).then(() => showToast('🔗 Share text copied!'));
   }
 }
 // ── CART ──
