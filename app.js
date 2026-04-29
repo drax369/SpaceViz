@@ -12,6 +12,7 @@ const CATALOG = [
     tag: "Bestseller",
     model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#C9A84C",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
     variants: [
       { name: "Royal Blue",  hex: "#1B3A8C" },
       { name: "Emerald",     hex: "#1B5E3B" },
@@ -31,6 +32,7 @@ const CATALOG = [
     tag: "New",
     model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
     color: "#2DD4BF",
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80",
     variants: [
       { name: "Cream",       hex: "#F5F0E8" },
       { name: "Teal",        hex: "#2DD4BF" },
@@ -50,6 +52,7 @@ const CATALOG = [
     tag: "Popular",
     model: "https://modelviewer.dev/shared-assets/models/reflective-sphere.glb",
     color: "#92603A",
+    image: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?w=600&q=80",
     variants: [
       { name: "Walnut",      hex: "#5C3D1E" },
       { name: "Oak",         hex: "#C8A96E" },
@@ -69,6 +72,7 @@ const CATALOG = [
     tag: "Premium",
     model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#4A6FA5",
+    image: "https://images.unsplash.com/photo-1594620302200-9a762244a156?w=600&q=80",
     variants: [
       { name: "Natural",     hex: "#C8A96E" },
       { name: "Black",       hex: "#1A1A1A" },
@@ -88,6 +92,7 @@ const CATALOG = [
     tag: "New",
     model: "https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb",
     color: "#C9A84C",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
     variants: [
       { name: "Brass",       hex: "#C9A84C" },
       { name: "Matte Black", hex: "#1A1A1A" },
@@ -107,6 +112,7 @@ const CATALOG = [
     tag: "Trending",
     model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
     color: "#2D6A4F",
+    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
     variants: [
       { name: "Terracotta",  hex: "#C4622D" },
       { name: "White",       hex: "#F0EDE8" },
@@ -126,6 +132,7 @@ const CATALOG = [
     tag: "Premium",
     model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#8B5E3C",
+    image: "https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80",
     variants: [
       { name: "Pine",        hex: "#C8A96E" },
       { name: "Walnut",      hex: "#5C3D1E" },
@@ -145,6 +152,7 @@ const CATALOG = [
     tag: "Luxury",
     model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#7B2D8B",
+    image: "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=600&q=80",
     variants: [
       { name: "Violet",      hex: "#7B2D8B" },
       { name: "Midnight",    hex: "#1B1B3A" },
@@ -206,10 +214,14 @@ function renderCatalog() {
       id="card-${item.id}"
       onclick="selectItem(${item.id})"
     >
-      <div class="catalog-card-img-placeholder"
-        style="background: linear-gradient(135deg, ${item.color}99 0%, ${item.color}44 100%); border-bottom: 1px solid ${item.color}33;"
-      >
-        <span style="font-size:90px;line-height:1;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));transform:translateY(4px);transition:transform 0.4s ease;">${item.emoji}</span>
+      <div class="catalog-card-img-wrap">
+        <img
+          src="${item.image}"
+          alt="${item.name}"
+          class="catalog-card-img"
+          loading="lazy"
+          onerror="this.parentElement.style.background='linear-gradient(135deg,${item.color}99,${item.color}44)';this.style.display='none'"
+        />
       </div>
       <div class="catalog-card-body">
         <div class="catalog-card-name">${item.name}</div>
