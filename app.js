@@ -107,58 +107,66 @@ const CATALOG = [
 ];
 
 // ── STATE ──
-let cart = [];
 let selectedItem = null;
+let cart         = [];
 let itemViewedAt = null;
-let autoRotateEnabled = true;
+let riskTimer    = null;
+let arLaunched   = false;
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
-  renderFilters();
-  updateCartCount();
-  initModelViewerEvents();
+  updateCartUI();
+  setupModelViewerEvents();
 });
 
+// ── SETUP MODEL VIEWER EVENTS ──
+function setupModelViewerEvents() {
+  const viewer = document.getElementById('ar-model');
+  if (!viewer) return;
+
+  viewer.addEventListener('ar-status', (e) => {
+    if (e.detail.status === 'session-started') {
+      onARLaunched();
+    }
+  });
+
+  viewer.addEventListener('load', () => {
+    console.log('✓ 3D model loaded:', viewer.src);
+  });
+
+  viewer.addEventListener('error', (e) => {
+    console.error('Model failed to load:', e);
+    viewer.src = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+  });
+}
+
 // ── RENDER CATALOG ──
-function renderCatalog(filterCategory = 'All') {
+function renderCatalog() {
   const grid = document.getElementById('catalog-grid');
   if (!grid) return;
 
-  const items = filterCategory === 'All'
-    ? CATALOG
-    : CATALOG.filter(i => i.category === filterCategory);
-
-  grid.innerHTML = items.map(item => `
-    <div class="catalog-card" id="card-${item.id}" onclick="selectItem(${item.id})">
-      <div class="catalog-card-tag">${item.tag}</div>
-      <div class="catalog-card-emoji" style="color:${item.color}">${item.emoji}</div>
-      <div class="catalog-card-info">
-        <div class="catalog-card-name">${item.name}</div>
-        <div class="catalog-card-category">${item.category}</div>
-        <div class="catalog-card-price">${item.priceDisplay}</div>
-        <div class="catalog-card-dims">${item.dimsDisplay}</div>
+  grid.innerHTML = CATALOG.map(item => `
+    <div
+      class="catalog-card"
+      id="card-${item.id}"
+      onclick="selectItem(${item.id})"
+    >
+      <div class="catalog-card-img-placeholder"
+        style="background: linear-gradient(135deg, ${item.color}99 0%, ${item.color}44 100%); border-bottom: 1px solid ${item.color}33;"
+      >
+        <span style="font-size:90px;line-height:1;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));transform:translateY(4px);transition:transform 0.4s ease;">${item.emoji}</span>
       </div>
-      <button class="catalog-card-btn">View in AR →</button>
+      <div class="catalog-card-body">
+        <div class="catalog-card-name">${item.name}</div>
+        <div class="catalog-card-dims">${item.dimsDisplay}</div>
+        <div class="catalog-card-footer">
+          <div class="catalog-card-price">${item.priceDisplay}</div>
+          <div class="catalog-card-tag">${item.tag}</div>
+        </div>
+      </div>
     </div>
   `).join('');
-}
-
-// ── RENDER FILTERS ──
-function renderFilters() {
-  const container = document.getElementById('catalog-filters');
-  if (!container) return;
-
-  const categories = ['All', ...new Set(CATALOG.map(i => i.category))];
-  container.innerHTML = categories.map((cat, i) => `
-    <button class="filter-btn ${i === 0 ? 'active' : ''}" onclick="filterCatalog('${cat}', this)">${cat}</button>
-  `).join('');
-}
-
-function filterCatalog(category, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCatalog(category);
 }
 
 // ── SELECT ITEM ──
@@ -168,6 +176,7 @@ function selectItem(id) {
 
   selectedItem = item;
   itemViewedAt = Date.now();
+  arLaunched   = false;
 
   // Update active card
   document.querySelectorAll('.catalog-card').forEach(c => {
@@ -185,404 +194,369 @@ function selectItem(id) {
     activeCard.appendChild(badge);
   }
 
-  // Load model in viewer
+  // Load 3D model
   const viewer = document.getElementById('ar-model');
   if (viewer) {
     viewer.src = item.model;
-    viewer.setAttribute('camera-orbit', '0deg 75deg 2.5m');
-
-    viewer.addEventListener('error', () => {
-      showToast('⚠️ Model failed to load — using fallback');
-      viewer.src = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
-    }, { once: true });
-
-    viewer.addEventListener('load', () => {
-      console.log('Model loaded:', viewer.src);
-    }, { once: true });
+    // Hide placeholder
+    const placeholder = document.getElementById('ar-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
   }
 
-  // Hide placeholder
-  const placeholder = document.getElementById('ar-placeholder');
-  if (placeholder) placeholder.style.display = 'none';
-
-  // Reset action bar (hide until AR is launched)
+  // Hide screenshot bar (only show after AR launch)
   const actionBar = document.getElementById('ar-action-bar');
   if (actionBar) actionBar.style.display = 'none';
 
-  // Show fallback "Launch in Your Room" button (visible on all devices)
-  const fallbackBtn = document.getElementById('ar-fallback-btn');
-  if (fallbackBtn) fallbackBtn.style.display = 'block';
+  // Show fallback launch button
+  const fallbackBar = document.getElementById('ar-fallback-bar');
+  if (fallbackBar) fallbackBar.style.display = 'flex';
 
   // Update panels
   updateSelectedInfo(item);
-  updateFitChecker(item);
-  updateReturnRisk(item);
   updateQuickAdd(item);
 
-  showToast(`${item.emoji} ${item.name} loaded in AR viewer`);
+  // Reset fit result
+  const fitResult = document.getElementById('fit-result');
+  if (fitResult) {
+    fitResult.className = 'fit-result hidden';
+    fitResult.innerHTML = '';
+  }
+
+  // Hide risk card
+  const riskCard = document.getElementById('risk-card');
+  if (riskCard) riskCard.style.display = 'none';
+
+  // Start return risk timer
+  startRiskTimer(item);
+
+  // Toast
+  showToast(`${item.emoji} ${item.name} loaded — click "Launch in Your Room" for AR`);
 
   // Smooth scroll to AR studio
   setTimeout(() => {
-    document.getElementById('ar-studio')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    document.getElementById('ar-studio')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 300);
+}
+
+// ── ON AR LAUNCHED (called when user taps the AR button) ──
+function onARLaunched() {
+  arLaunched = true;
+
+  // Hide fallback button
+  const fallbackBar = document.getElementById('ar-fallback-bar');
+  if (fallbackBar) fallbackBar.style.display = 'none';
+
+  // Show screenshot/share bar after a short delay (so AR session starts first)
+  setTimeout(() => {
+    const actionBar = document.getElementById('ar-action-bar');
+    if (actionBar) actionBar.style.display = 'flex';
+    showToast('📸 AR active — tap Screenshot to capture your room!');
+  }, 1500);
 }
 
 // ── UPDATE SELECTED INFO ──
 function updateSelectedInfo(item) {
-  const el = document.getElementById('selected-info');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="selected-item-display">
-      <div class="selected-emoji" style="color:${item.color}">${item.emoji}</div>
-      <div class="selected-details">
-        <div class="selected-name">${item.name}</div>
-        <div class="selected-category">${item.category} · ${item.tag}</div>
-        <div class="selected-price">${item.priceDisplay}</div>
-        <div class="selected-dims">${item.dimsDisplay}</div>
+  const info = document.getElementById('selected-info');
+  if (!info) return;
+
+  info.innerHTML = `
+    <div class="selected-item-info">
+      <div style="font-size:52px;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))">${item.emoji}</div>
+      <div class="selected-item-name">${item.name}</div>
+      <div class="selected-item-dims">${item.dimsDisplay}</div>
+      <div class="selected-item-price">${item.priceDisplay}</div>
+      <div class="selected-item-tag">${item.category}</div>
+    </div>
+  `;
+}
+
+// ── UPDATE QUICK ADD ──
+function updateQuickAdd(item) {
+  const card = document.getElementById('quick-add-card');
+  const info = document.getElementById('quick-add-info');
+  if (!card || !info) return;
+
+  info.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <span style="font-size:36px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3))">${item.emoji}</span>
+      <div>
+        <div style="font-size:15px;color:var(--white);margin-bottom:4px">${item.name}</div>
+        <div style="font-family:var(--font-display);font-size:22px;color:var(--gold)">${item.priceDisplay}</div>
       </div>
     </div>
   `;
+  card.style.display = 'block';
 }
 
 // ── FIT CHECKER ──
-function updateFitChecker(item) {
-  const el = document.getElementById('fit-checker-content');
-  if (!el) return;
-
-  el.innerHTML = `
-    <div class="fit-inputs">
-      <div class="fit-input-group">
-        <label>Room Width (cm)</label>
-        <input type="number" id="room-w" placeholder="e.g. 400" class="fit-input" />
-      </div>
-      <div class="fit-input-group">
-        <label>Room Depth (cm)</label>
-        <input type="number" id="room-d" placeholder="e.g. 350" class="fit-input" />
-      </div>
-    </div>
-    <button class="btn-primary full-width" onclick="checkFit()">Check Fit →</button>
-    <div id="fit-result"></div>
-  `;
-}
-
 function checkFit() {
-  const roomW = parseFloat(document.getElementById('room-w')?.value);
-  const roomD = parseFloat(document.getElementById('room-d')?.value);
-  const result = document.getElementById('fit-result');
-
-  if (!selectedItem || !result) return;
-  if (!roomW || !roomD) {
-    result.innerHTML = `<p class="fit-warning">Please enter room dimensions</p>`;
+  if (!selectedItem) {
+    showToast('Please select a furniture item first');
     return;
   }
 
-  const itemW = selectedItem.dims.w * 100;
-  const itemD = selectedItem.dims.d * 100;
-  const clearW = roomW - itemW;
-  const clearD = roomD - itemD;
-  const fits = clearW >= 60 && clearD >= 60;
-  const tight = clearW >= 30 && clearD >= 30;
+  const roomW = parseFloat(document.getElementById('room-width')?.value);
+  const roomL = parseFloat(document.getElementById('room-length')?.value);
 
-  if (fits) {
-    result.innerHTML = `
-      <div class="fit-result fit-ok">
-        <span class="fit-icon">✓</span>
-        <div>
-          <strong>Fits comfortably</strong>
-          <p>${clearW.toFixed(0)}cm × ${clearD.toFixed(0)}cm clearance</p>
-        </div>
-      </div>`;
-  } else if (tight) {
-    result.innerHTML = `
-      <div class="fit-result fit-warn">
-        <span class="fit-icon">⚠</span>
-        <div>
-          <strong>Tight fit</strong>
-          <p>${clearW.toFixed(0)}cm × ${clearD.toFixed(0)}cm clearance — consider carefully</p>
-        </div>
-      </div>`;
+  if (!roomW || !roomL || roomW <= 0 || roomL <= 0) {
+    showToast('Please enter valid room dimensions');
+    return;
+  }
+
+  const item     = selectedItem;
+  const itemW    = item.dims.w;
+  const itemD    = item.dims.d;
+  const clearW   = roomW - itemW;
+  const clearD   = roomL - itemD;
+  const minClear = 0.6;
+
+  const fitResult = document.getElementById('fit-result');
+  if (!fitResult) return;
+
+  fitResult.classList.remove('hidden', 'fit-pass', 'fit-fail', 'fit-warn');
+
+  if (clearW < 0 || clearD < 0) {
+    fitResult.classList.add('fit-fail');
+    fitResult.innerHTML = `
+      <span class="fit-result-icon">✗</span>
+      <strong>Does Not Fit</strong>
+      ${clearW < 0 ? `Item is <strong>${Math.abs(clearW * 100).toFixed(0)}cm too wide</strong> for your room.` : ''}
+      ${clearD < 0 ? `Item is <strong>${Math.abs(clearD * 100).toFixed(0)}cm too deep</strong> for your room.` : ''}
+      <br/>Consider a smaller alternative or a different wall placement.
+    `;
+  } else if (clearW < minClear || clearD < minClear) {
+    fitResult.classList.add('fit-warn');
+    fitResult.innerHTML = `
+      <span class="fit-result-icon">⚠</span>
+      <strong>Fits — But Tight</strong>
+      Width clearance: <strong>${(clearW * 100).toFixed(0)}cm</strong> &nbsp;·&nbsp;
+      Depth clearance: <strong>${(clearD * 100).toFixed(0)}cm</strong><br/>
+      Minimum recommended walkway is 60cm. This may feel cramped.
+    `;
   } else {
-    result.innerHTML = `
-      <div class="fit-result fit-bad">
-        <span class="fit-icon">✕</span>
-        <div>
-          <strong>Won't fit</strong>
-          <p>Item is ${Math.abs(Math.min(clearW, clearD)).toFixed(0)}cm too large for this room</p>
-        </div>
-      </div>`;
+    fitResult.classList.add('fit-pass');
+    fitResult.innerHTML = `
+      <span class="fit-result-icon">✓</span>
+      <strong>Perfect Fit</strong>
+      Width clearance: <strong>${(clearW * 100).toFixed(0)}cm</strong> &nbsp;·&nbsp;
+      Depth clearance: <strong>${(clearD * 100).toFixed(0)}cm</strong><br/>
+      Comfortable walkway space on all sides. Go ahead and order!
+    `;
   }
 }
 
 // ── RETURN RISK ENGINE ──
-function updateReturnRisk(item) {
-  const el = document.getElementById('return-risk-content');
-  if (!el) return;
+function startRiskTimer(item) {
+  if (riskTimer) clearTimeout(riskTimer);
 
-  const timeViewed = itemViewedAt ? Math.round((Date.now() - itemViewedAt) / 1000) : 0;
-  const priceRisk = item.price > 30000 ? 20 : item.price > 10000 ? 10 : 5;
-  const dimRisk = (item.dims.w > 1.5 || item.dims.h > 1.5) ? 15 : 5;
-  const baseScore = 100 - priceRisk - dimRisk;
-  const score = Math.max(40, Math.min(95, baseScore));
+  const riskCard   = document.getElementById('risk-card');
+  const riskResult = document.getElementById('risk-result');
+  if (!riskCard || !riskResult) return;
 
-  let label, color, advice;
-  if (score >= 80) {
-    label = 'Low Risk'; color = '#2DD4BF';
-    advice = 'High confidence purchase based on dimensions and price point.';
-  } else if (score >= 60) {
-    label = 'Medium Risk'; color = '#C9A84C';
-    advice = 'Consider measuring your space carefully before purchasing.';
-  } else {
-    label = 'Higher Risk'; color = '#F87171';
-    advice = 'Large item — verify dimensions and room clearance with Fit Checker.';
-  }
+  riskCard.style.display = 'none';
 
-  el.innerHTML = `
-    <div class="risk-score-wrap">
-      <div class="risk-score-circle" style="--score-color:${color}">
-        <span class="risk-score-num">${score}</span>
-        <span class="risk-score-label">/100</span>
-      </div>
-      <div class="risk-score-info">
-        <div class="risk-label" style="color:${color}">${label}</div>
-        <p class="risk-advice">${advice}</p>
-      </div>
-    </div>
-  `;
-}
+  riskTimer = setTimeout(() => {
+    const dwellTime = (Date.now() - itemViewedAt) / 1000;
+    let riskHTML;
 
-// ── QUICK ADD ──
-function updateQuickAdd(item) {
-  const el = document.getElementById('quick-add-content');
-  if (!el) return;
-
-  el.innerHTML = `
-    <div class="quick-add-item">
-      <span class="quick-add-emoji">${item.emoji}</span>
-      <div class="quick-add-info">
-        <div class="quick-add-name">${item.name}</div>
-        <div class="quick-add-price">${item.priceDisplay}</div>
-      </div>
-    </div>
-    <button class="btn-primary full-width" onclick="addToCart(${item.id})">Add to Cart →</button>
-  `;
-}
-
-// ── CART ──
-function addToCart(id) {
-  const item = CATALOG.find(i => i.id === id);
-  if (!item) return;
-
-  const existing = cart.find(c => c.id === id);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ ...item, qty: 1 });
-  }
-
-  updateCartCount();
-  showToast(`${item.emoji} ${item.name} added to cart!`);
-}
-
-function updateCartCount() {
-  const el = document.getElementById('cart-count');
-  if (el) el.textContent = cart.reduce((sum, i) => sum + i.qty, 0);
-}
-
-function openCart() {
-  document.getElementById('cart-overlay').style.display = 'block';
-  document.getElementById('cart-drawer').classList.add('open');
-  renderCartItems();
-}
-
-function closeCart() {
-  document.getElementById('cart-overlay').style.display = 'none';
-  document.getElementById('cart-drawer').classList.remove('open');
-}
-
-function renderCartItems() {
-  const el = document.getElementById('cart-items');
-  const totalEl = document.getElementById('cart-total');
-  if (!el) return;
-
-  if (cart.length === 0) {
-    el.innerHTML = '<p class="muted-text" style="padding:20px">Your cart is empty</p>';
-    if (totalEl) totalEl.textContent = '₹0';
-    return;
-  }
-
-  el.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <span class="cart-item-emoji">${item.emoji}</span>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">${item.priceDisplay}</div>
-      </div>
-      <div class="cart-item-qty">
-        <button onclick="changeQty(${item.id}, -1)">−</button>
-        <span>${item.qty}</span>
-        <button onclick="changeQty(${item.id}, 1)">+</button>
-      </div>
-    </div>
-  `).join('');
-
-  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  if (totalEl) totalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
-}
-
-function changeQty(id, delta) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
-  updateCartCount();
-  renderCartItems();
-}
-
-function checkout() {
-  if (cart.length === 0) return showToast('Your cart is empty');
-  closeCart();
-  document.getElementById('success-overlay').style.display = 'flex';
-  cart = [];
-  updateCartCount();
-}
-
-function closeSuccess() {
-  document.getElementById('success-overlay').style.display = 'none';
-}
-
-// ── AR ENVIRONMENT ──
-function setEnv(env) {
-  const viewer = document.getElementById('ar-model');
-  if (!viewer) return;
-
-  const envMap = {
-    neutral: 'neutral',
-    dawn: 'dawn',
-    night: 'night'
-  };
-
-  document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-
-  viewer.setAttribute('environment-image', envMap[env] || 'neutral');
-}
-
-function toggleRotate() {
-  const viewer = document.getElementById('ar-model');
-  if (!viewer) return;
-
-  autoRotateEnabled = !autoRotateEnabled;
-  const btn = document.getElementById('rotate-btn');
-
-  if (autoRotateEnabled) {
-    viewer.setAttribute('auto-rotate', '');
-    if (btn) btn.classList.add('active');
-  } else {
-    viewer.removeAttribute('auto-rotate');
-    if (btn) btn.classList.remove('active');
-  }
-}
-
-// ── MODEL VIEWER EVENTS ──
-function initModelViewerEvents() {
-  const viewer = document.getElementById('ar-model');
-  if (!viewer) return;
-
-  viewer.addEventListener('ar-status', (e) => {
-    if (e.detail.status === 'session-started') {
-      onARLaunched();
+    if (dwellTime < 15) {
+      riskHTML = `
+        <div class="risk-high">
+          <strong style="display:block;margin-bottom:8px">⚠ Review carefully before buying</strong>
+          You've viewed this item for under 15 seconds.
+          High return risk detected — take a moment to confirm the fit before checkout.
+        </div>
+      `;
+    } else if (dwellTime < 45) {
+      riskHTML = `
+        <div class="risk-medium">
+          <strong style="display:block;margin-bottom:8px">◎ Moderate confidence</strong>
+          You're spending time reviewing this piece — good sign.
+          Try the Fit Checker above to confirm dimensions before ordering.
+        </div>
+      `;
+    } else {
+      riskHTML = `
+        <div class="risk-low">
+          <strong style="display:block;margin-bottom:8px">✓ High purchase confidence</strong>
+          You've reviewed this item thoroughly.
+          You're making an informed decision — great choice!
+        </div>
+      `;
     }
-  });
-}
 
-// ── AR LAUNCHED — show screenshot bar ──
-function onARLaunched() {
-  setTimeout(() => {
-    const actionBar = document.getElementById('ar-action-bar');
-    if (actionBar) actionBar.style.display = 'flex';
-    showToast('📸 You can screenshot and share your AR room!');
-  }, 1500);
+    riskResult.innerHTML = riskHTML;
+    riskCard.style.display = 'block';
+  }, 8000);
 }
 
 // ── SCREENSHOT ──
 async function captureRoom() {
   const viewer = document.querySelector('.ar-viewer-wrap');
-  if (!viewer) return;
+  if (!viewer) {
+    showToast('Nothing to capture yet');
+    return;
+  }
 
-  showToast('📸 Capturing...');
+  showToast('📸 Capturing your room...');
 
   try {
     const canvas = await html2canvas(viewer, {
       backgroundColor: '#0d0d0d',
       scale: 2,
       useCORS: true,
-      allowTaint: true
+      allowTaint: true,
+      ignoreElements: (el) => el.id === 'ar-action-bar' || el.id === 'ar-fallback-bar'
     });
 
+    const itemName = selectedItem?.name || 'Room';
     const link = document.createElement('a');
-    link.download = `SpaceViz-${selectedItem?.name || 'Room'}-${Date.now()}.png`;
+    link.download = `SpaceViz-${itemName.replace(/\s+/g, '-')}-${Date.now()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 
-    showToast('✓ Screenshot saved!');
-
-    // Try native share with image on mobile
-    if (navigator.share && navigator.canShare) {
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], 'SpaceViz-Room.png', { type: 'image/png' });
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: `Check out this ${selectedItem?.name} on SpaceViz!`,
-            text: 'I found the perfect furniture using AR — no measuring tape needed!',
-            files: [file]
-          });
-        }
-      });
-    }
+    showToast(`✓ Screenshot saved as "${link.download}"`);
   } catch (err) {
-    showToast('Screenshot failed — try again');
-    console.error(err);
+    console.error('Screenshot error:', err);
+    showToast('Screenshot failed — please try again');
   }
 }
 
 // ── SHARE ──
 function shareRoom() {
-  const text = `Check out the ${selectedItem?.name || 'furniture'} I found on SpaceViz AR! ${window.location.href}`;
+  const itemName = selectedItem?.name || 'furniture';
+  const shareText = `Check out the ${itemName} I found on SpaceViz AR! No app needed — just open the link and see it in your room. ${window.location.href}`;
 
   if (navigator.share) {
     navigator.share({
-      title: 'My SpaceViz AR Room',
-      text,
+      title: `SpaceViz — ${itemName} in AR`,
+      text: shareText,
       url: window.location.href
+    }).catch(() => {
+      // User cancelled share — that's fine
     });
   } else {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('🔗 Link copied — ready to share!');
+    navigator.clipboard.writeText(shareText).then(() => {
+      showToast('🔗 Share link copied to clipboard!');
+    }).catch(() => {
+      showToast('🔗 Copy this link: ' + window.location.href);
     });
   }
+}
+
+// ── CART ──
+function addCurrentToCart() {
+  if (!selectedItem) {
+    showToast('Please select an item first');
+    return;
+  }
+  addToCart(selectedItem);
+}
+
+function addToCart(item) {
+  const existing = cart.find(c => c.id === item.id);
+  if (existing) {
+    existing.qty = (existing.qty || 1) + 1;
+  } else {
+    cart.push({ ...item, qty: 1 });
+  }
+  updateCartUI();
+  showToast(`${item.emoji} ${item.name} added to cart`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+  renderCartItems();
+}
+
+function updateCartUI() {
+  const count   = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+  const countEl = document.getElementById('cart-count');
+  if (countEl) countEl.textContent = count;
+}
+
+function renderCartItems() {
+  const container = document.getElementById('cart-items');
+  const totalEl   = document.getElementById('cart-total');
+  if (!container) return;
+
+  if (cart.length === 0) {
+    container.innerHTML = `<p class="muted-text" style="padding:24px 0;text-align:center">Your cart is empty</p>`;
+    if (totalEl) totalEl.textContent = '₹0';
+    return;
+  }
+
+  const total = cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
+
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-icon">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${item.priceDisplay}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">✕</button>
+    </div>
+  `).join('');
+
+  if (totalEl) {
+    totalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
+  }
+}
+
+// ── CART MODAL ──
+function openCart() {
+  renderCartItems();
+  document.getElementById('cart-modal')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-modal')?.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// ── CHECKOUT ──
+function checkout() {
+  if (cart.length === 0) {
+    showToast('Your cart is empty');
+    return;
+  }
+
+  closeCart();
+
+  const orderId = '#SV' + Math.floor(Math.random() * 90000 + 10000);
+  const orderEl = document.getElementById('order-id');
+  if (orderEl) orderEl.textContent = orderId;
+
+  document.getElementById('success-modal')?.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  cart = [];
+  updateCartUI();
+}
+
+function closeSuccess() {
+  document.getElementById('success-modal')?.classList.add('hidden');
+  document.body.style.overflow = '';
 }
 
 // ── TOAST ──
-function showToast(msg) {
-  let toast = document.getElementById('toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.className = 'toast';
-    document.body.appendChild(toast);
-  }
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
 
-  toast.textContent = msg;
-  toast.classList.add('show');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+  toast._timer = setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3500);
 }
 
-// ── KEYBOARD SHORTCUTS ──
+// ── KEYBOARD ──
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeCart();
