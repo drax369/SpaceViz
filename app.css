@@ -1113,3 +1113,36 @@ section {
   .ar-action-btn span { display: none; }
   .ar-action-btn { padding: 8px 12px; font-size: 18px; }
 }
+/* ── COLOUR SWITCHER ── */
+.colour-switcher {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.colour-dots {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.colour-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  position: relative;
+}
+
+.colour-dot:hover {
+  transform: scale(1.15);
+}
+
+.colour-dot.active {
+  border-color: var(--white);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+  transform: scale(1.15);
+}

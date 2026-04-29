@@ -11,7 +11,13 @@ const CATALOG = [
     emoji: "🛋️",
     tag: "Bestseller",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
-    color: "#C9A84C"
+    color: "#C9A84C",
+    variants: [
+      { name: "Royal Blue",  hex: "#1B3A8C" },
+      { name: "Emerald",     hex: "#1B5E3B" },
+      { name: "Charcoal",    hex: "#2C2C2C" },
+      { name: "Burgundy",    hex: "#6B1E2E" }
+    ]
   },
   {
     id: 2,
@@ -24,7 +30,13 @@ const CATALOG = [
     emoji: "🪑",
     tag: "New",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
-    color: "#2DD4BF"
+    color: "#2DD4BF",
+    variants: [
+      { name: "Cream",       hex: "#F5F0E8" },
+      { name: "Teal",        hex: "#2DD4BF" },
+      { name: "Blush Pink",  hex: "#E8A0A0" },
+      { name: "Slate",       hex: "#4A6FA5" }
+    ]
   },
   {
     id: 3,
@@ -37,7 +49,13 @@ const CATALOG = [
     emoji: "🪵",
     tag: "Popular",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AntiqueCamera/glTF-Binary/AntiqueCamera.glb",
-    color: "#92603A"
+    color: "#92603A",
+    variants: [
+      { name: "Walnut",      hex: "#5C3D1E" },
+      { name: "Oak",         hex: "#C8A96E" },
+      { name: "Ebony",       hex: "#1A1008" },
+      { name: "White Ash",   hex: "#E8E0D0" }
+    ]
   },
   {
     id: 4,
@@ -50,7 +68,13 @@ const CATALOG = [
     emoji: "📚",
     tag: "Premium",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
-    color: "#4A6FA5"
+    color: "#4A6FA5",
+    variants: [
+      { name: "Natural",     hex: "#C8A96E" },
+      { name: "Black",       hex: "#1A1A1A" },
+      { name: "White",       hex: "#F0EDE8" },
+      { name: "Teak",        hex: "#8B5E3C" }
+    ]
   },
   {
     id: 5,
@@ -63,7 +87,13 @@ const CATALOG = [
     emoji: "💡",
     tag: "New",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Lantern/glTF-Binary/Lantern.glb",
-    color: "#C9A84C"
+    color: "#C9A84C",
+    variants: [
+      { name: "Brass",       hex: "#C9A84C" },
+      { name: "Matte Black", hex: "#1A1A1A" },
+      { name: "Chrome",      hex: "#C0C0C0" },
+      { name: "Copper",      hex: "#B87333" }
+    ]
   },
   {
     id: 6,
@@ -76,7 +106,13 @@ const CATALOG = [
     emoji: "🌿",
     tag: "Trending",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
-    color: "#2D6A4F"
+    color: "#2D6A4F",
+    variants: [
+      { name: "Terracotta",  hex: "#C4622D" },
+      { name: "White",       hex: "#F0EDE8" },
+      { name: "Black",       hex: "#1A1A1A" },
+      { name: "Sage",        hex: "#7D9B76" }
+    ]
   },
   {
     id: 7,
@@ -89,7 +125,13 @@ const CATALOG = [
     emoji: "🍽️",
     tag: "Premium",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
-    color: "#8B5E3C"
+    color: "#8B5E3C",
+    variants: [
+      { name: "Pine",        hex: "#C8A96E" },
+      { name: "Walnut",      hex: "#5C3D1E" },
+      { name: "White",       hex: "#F0EDE8" },
+      { name: "Black Oak",   hex: "#1A1008" }
+    ]
   },
   {
     id: 8,
@@ -102,7 +144,13 @@ const CATALOG = [
     emoji: "🛏️",
     tag: "Luxury",
     model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
-    color: "#7B2D8B"
+    color: "#7B2D8B",
+    variants: [
+      { name: "Violet",      hex: "#7B2D8B" },
+      { name: "Midnight",    hex: "#1B1B3A" },
+      { name: "Blush",       hex: "#E8A0A0" },
+      { name: "Forest",      hex: "#1B5E3B" }
+    ]
   }
 ];
 
@@ -274,8 +322,50 @@ function updateSelectedInfo(item) {
       <div class="selected-item-dims">${item.dimsDisplay}</div>
       <div class="selected-item-price">${item.priceDisplay}</div>
       <div class="selected-item-tag">${item.category}</div>
+
+      ${item.variants ? `
+      <div class="colour-switcher">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--white-30);margin-bottom:10px;">Colour Variants</div>
+        <div class="colour-dots">
+          ${item.variants.map((v, i) => `
+            <button
+              class="colour-dot ${i === 0 ? 'active' : ''}"
+              style="background:${v.hex};"
+              title="${v.name}"
+              onclick="applyColour(${item.id}, '${v.hex}', '${v.name}', this)"
+            ></button>
+          `).join('')}
+        </div>
+        <div id="colour-label" style="font-size:12px;color:var(--gold);margin-top:8px;letter-spacing:1px;">${item.variants[0].name}</div>
+      </div>
+      ` : ''}
     </div>
   `;
+}
+
+function applyColour(itemId, hex, name, btn) {
+  // Update active dot
+  document.querySelectorAll('.colour-dot').forEach(d => d.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Update label
+  const label = document.getElementById('colour-label');
+  if (label) label.textContent = name;
+
+  // Apply colour to model-viewer material
+  const viewer = document.getElementById('ar-model');
+  if (!viewer) return;
+
+  // Convert hex to RGB 0-1 range
+  const r = parseInt(hex.slice(1,3), 16) / 255;
+  const g = parseInt(hex.slice(3,5), 16) / 255;
+  const b = parseInt(hex.slice(5,7), 16) / 255;
+
+  viewer.model?.materials?.forEach(material => {
+    material.pbrMetallicRoughness?.setBaseColorFactor([r, g, b, 1]);
+  });
+
+  showToast(`✓ Colour changed to ${name}`);
 }
 
 // ── UPDATE QUICK ADD ──
