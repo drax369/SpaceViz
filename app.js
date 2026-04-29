@@ -10,7 +10,7 @@ const CATALOG = [
     dimsDisplay: "210cm × 90cm × 85cm",
     emoji: "🛋️",
     tag: "Bestseller",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
+    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#C9A84C",
     variants: [
       { name: "Royal Blue",  hex: "#1B3A8C" },
@@ -29,7 +29,7 @@ const CATALOG = [
     dimsDisplay: "85cm × 80cm × 90cm",
     emoji: "🪑",
     tag: "New",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
+    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
     color: "#2DD4BF",
     variants: [
       { name: "Cream",       hex: "#F5F0E8" },
@@ -48,7 +48,7 @@ const CATALOG = [
     dimsDisplay: "120cm × 60cm × 45cm",
     emoji: "🪵",
     tag: "Popular",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AntiqueCamera/glTF-Binary/AntiqueCamera.glb",
+    model: "https://modelviewer.dev/shared-assets/models/reflective-sphere.glb",
     color: "#92603A",
     variants: [
       { name: "Walnut",      hex: "#5C3D1E" },
@@ -67,7 +67,7 @@ const CATALOG = [
     dimsDisplay: "100cm × 35cm × 180cm",
     emoji: "📚",
     tag: "Premium",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
+    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#4A6FA5",
     variants: [
       { name: "Natural",     hex: "#C8A96E" },
@@ -86,7 +86,7 @@ const CATALOG = [
     dimsDisplay: "40cm × 40cm × 160cm",
     emoji: "💡",
     tag: "New",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Lantern/glTF-Binary/Lantern.glb",
+    model: "https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb",
     color: "#C9A84C",
     variants: [
       { name: "Brass",       hex: "#C9A84C" },
@@ -105,7 +105,7 @@ const CATALOG = [
     dimsDisplay: "60cm × 60cm × 120cm",
     emoji: "🌿",
     tag: "Trending",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
+    model: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
     color: "#2D6A4F",
     variants: [
       { name: "Terracotta",  hex: "#C4622D" },
@@ -124,7 +124,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 90cm × 76cm",
     emoji: "🍽️",
     tag: "Premium",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
+    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#8B5E3C",
     variants: [
       { name: "Pine",        hex: "#C8A96E" },
@@ -143,7 +143,7 @@ const CATALOG = [
     dimsDisplay: "180cm × 210cm × 120cm",
     emoji: "🛏️",
     tag: "Luxury",
-    model: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb",
+    model: "https://modelviewer.dev/shared-assets/models/GlamVelvetSofa.glb",
     color: "#7B2D8B",
     variants: [
       { name: "Violet",      hex: "#7B2D8B" },
